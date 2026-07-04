@@ -7,8 +7,11 @@
     
     <script>
         (function() {
-            const allowedDomain = "SEHATI-AI26.github.io";
-            const currentDomain = window.location.hostname;
+            // PERBAIKAN: Gunakan huruf kecil semua untuk domain patokan
+            const allowedDomain = "sehati-ai26.github.io";
+            
+            // PERBAIKAN: Paksa URL yang terbaca dari browser menjadi huruf kecil
+            const currentDomain = window.location.hostname.toLowerCase();
             
             // Bypass untuk localhost dan lingkungan pratinjau
             const isLocal = currentDomain === "localhost" || currentDomain === "127.0.0.1" || currentDomain === "";
