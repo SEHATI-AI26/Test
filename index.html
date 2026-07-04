@@ -269,16 +269,25 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // PERBAIKAN: Menyimpan data sesi LENGKAP dengan pembersihan spasi (trim)
+                    // Menyimpan data sesi dengan pembersihan spasi (trim)
                     const cleanEmail = payload.email.trim();
                     
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('unitKerja', result.unitKerja);
                     sessionStorage.setItem('kategori', payload.fasyankes);
                     
-                    // Simpan email agar dikenali oleh Dashboard untuk otorisasi Panel Persetujuan
+                    // Simpan email untuk otorisasi Panel Persetujuan
                     sessionStorage.setItem('userEmail', cleanEmail);
                     localStorage.setItem('userEmail', cleanEmail); 
+
+                    // --- TAMBAHAN BARU: Menerima URL Drive dari Server Pusat ---
+                    if (result.driveUrl && result.driveUrl !== "") {
+                        sessionStorage.setItem('gasUrl', result.driveUrl);
+                    } else {
+                        // Jika server tidak mengirim URL, pastikan tidak ada sisa URL lama di sesi ini
+                        sessionStorage.removeItem('gasUrl'); 
+                    }
+                    // -----------------------------------------------------------
                     
                     // Arahkan ke halaman Dashboard
                     window.location.href = 'dashboard.html';
