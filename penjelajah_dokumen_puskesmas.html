@@ -28,9 +28,7 @@
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('userEmail', 'demo@fasyankes.id'); 
                     sessionStorage.setItem('unitKerja', 'Puskesmas Demo Canvas');
-                    sessionStorage.setItem('kategori', 'Puskesmas'); // Ganti 'Dinkes' jika ingin menguji role pendamping
-                } else {
-                    window.location.href = 'index.html'; 
+                    sessionStorage.setItem('kategori', 'Puskesmas');
                 }
             }
         })();
@@ -82,7 +80,7 @@
         </div>
         
         <div class="flex items-center gap-3">
-            <a href="dashboard.html" class="flex items-center gap-2 bg-slate-100 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-200 transition">
+            <a href="#" class="flex items-center gap-2 bg-slate-100 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-200 transition">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
             </a>
             <button onclick="openSetupModal()" class="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition shadow-md">
@@ -117,7 +115,6 @@
         <span id="toastMessage">Pesan Notifikasi</span>
     </div>
 
-    <!-- Modal Setup Google Drive -->
     <div id="setupModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center z-50 p-4 opacity-0 transition-opacity duration-300">
         <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300" id="setupModalContent">
             <div class="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-2xl">
@@ -149,14 +146,31 @@
                     <button onclick="copyScriptCode()" class="absolute top-2 right-2 bg-slate-700 text-white text-xs px-3 py-1.5 rounded-md hover:bg-slate-600 transition opacity-0 group-hover:opacity-100 focus:opacity-100 shadow-md">
                         <i class="fa-regular fa-copy"></i> Copy Code
                     </button>
+                    <!-- KODE GOOGLE DRIVE ANTI-CRASH -->
                     <pre id="gasScriptCode" class="bg-slate-800 text-green-400 p-4 rounded-xl overflow-x-auto text-xs font-mono border border-slate-700">
 function doPost(e) {
+  var headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type"
+  };
+
   try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Data file tidak diterima server." }))
+        .setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
+    }
+
     var data = JSON.parse(e.postData.contents);
+    if (!data.fileBase64) {
+       return ContentService.createTextOutput(JSON.stringify({ success: false, error: "File Base64 kosong atau gagal diproses." }))
+        .setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
+    }
+
     var fileData = data.fileBase64;
-    var fileName = data.fileName;
-    var mimeType = data.mimeType;
-    var folderPath = data.folderPath;
+    var fileName = data.fileName || "Dokumen_Tanpa_Nama.pdf";
+    var mimeType = data.mimeType || "application/pdf";
+    var folderPath = data.folderPath || "SEHATI_Uploads";
 
     var decodedFile = Utilities.base64Decode(fileData.split(',')[1]);
     var blob = Utilities.newBlob(decodedFile, mimeType, fileName);
@@ -182,13 +196,13 @@ function doPost(e) {
       success: true,
       url: file.getUrl(),
       fileName: file.getName()
-    })).setMimeType(ContentService.MimeType.JSON);
+    })).setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
 
   } catch(error) {
     return ContentService.createTextOutput(JSON.stringify({
       success: false,
-      error: error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
+      error: "CRASH SCRIPT DRIVE: " + error.toString()
+    })).setMimeType(ContentService.MimeType.JSON).setHeaders(headers);
   }
 }
 
@@ -236,6 +250,7 @@ function doOptions(e) {
                     </ul>
                 </div>
 
+                <!-- FORM INPUT URL DRIVE -->
                 <div class="mt-5 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
                     <label class="block text-xs font-bold text-emerald-800 uppercase mb-1">Tempel Web App URL Anda di sini:</label>
                     <input type="text" id="gasUrlInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-3 py-2 border border-emerald-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-mono">
@@ -248,8 +263,9 @@ function doOptions(e) {
     </div>
 
     <script>
-        // API Database Pusat
-        const CENTRAL_GAS_URL = "https://script.google.com/macros/s/AKfycbyqV3Q8K4RJbTS_CK8U1XTzLjC-cIZc95oaRRO5hAZElGEm-DG5YAvbhf0RhgdLo3je/exec";
+        
+        // API Database Pusat (URL TELAH DIPERBARUI)
+        const CENTRAL_GAS_URL = "https://script.google.com/macros/s/AKfycbyz0WCr1nW8aH_ExPZnFvbxvUZt65PpDAf8L7pdb4j2KE8eKkV3cOAZcePbuboMK31T/exec";
 
         // Identitas User
         const currentUnitKerja = sessionStorage.getItem('unitKerja') || 'Puskesmas_Default';
@@ -274,9 +290,6 @@ function doOptions(e) {
             }
         });
 
-        // =======================================================
-        // DATA AKREDITASI 100% LENGKAP (BAB 1 - 5)
-        // =======================================================
         const rawData = {
             "BAB1": {
                 title: "BAB I: KEPEMIMPINAN DAN MANAJEMEN PUSKESMAS (KMP)", icon: "🏛️", color: "sky",
@@ -299,7 +312,7 @@ function doOptions(e) {
                         ]}
                     ]},
                     { id: "Standar 1.2", title: "Tata kelola organisasi.", kriteriaList: [
-                        { id: "Kriteria 1.2.1", title: "Struktur organisasi ditetapkan dengan kejelasan tugas, wewenang, tanggung jawab, dan persyaratan jabatan.", eps: [
+                        { id: "Kriteria 1.2.1", title: "Struktur organisasi ditetapkan dengan kejelasan tugas, wewenang, tanggung responsibility, dan persyaratan jabatan.", eps: [
                             "a) Kepala Puskesmas menetapkan penanggung jawab dan koordinator pelayanan. (R)",
                             "b) Kode etik perilaku ditetapkan, dievaluasi, dan ditindaklanjuti. (R, D, W)",
                             "c) Kebijakan dan prosedur pendelegasian wewenang manajerial ditetapkan dengan jelas. (R, D)"
@@ -893,7 +906,6 @@ function doOptions(e) {
             const container = document.getElementById('explorer-content');
             container.innerHTML = '';
             
-            // Logika UI untuk Dinkes vs Fasyankes
             const isDinkes = currentKategori === 'Dinkes';
             const infoBox = document.getElementById('infoTextRole');
             
@@ -953,7 +965,6 @@ function doOptions(e) {
                                 cleanText = fullText.replace(methodsRegex, '').trim();
                                 const typesString = match[0].toUpperCase();
                                 
-                                // PENTING: Filter hak akses unggah berdasarkan Role (Dinkes vs Fasyankes)
                                 const allowedTypes = isDinkes ? ['R', 'D', 'O', 'W', 'S'] : ['R', 'D', 'O'];
                                 allowedTypes.forEach(t => {
                                     if(typesString.includes(t)) rdowsTypes.push(t);
@@ -1062,53 +1073,64 @@ function doOptions(e) {
         }
 
         async function saveGasUrl(event) {
-            const url = document.getElementById('gasUrlInput').value.trim();
-            if(url && !url.startsWith('https://script.google.com/')) {
-                showToast('URL tidak valid. Harus berawalan https://script.google.com/', 'error'); return;
-            }
+            if (event) event.preventDefault();
             
-            const btn = event.target || document.getElementById('btnSaveGas');
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch spinner"></i> Menyimpan ke Server...';
+            const urlInput = document.getElementById('gasUrlInput').value.trim();
+            const btn = document.getElementById('btnSaveGas');
+            
+            // Validasi format URL
+            if (urlInput && !urlInput.startsWith('https://script.google.com/')) {
+                showToast('URL tidak valid. Pastikan diawali dengan https://script.google.com/', 'error');
+                return;
+            }
+
+            // Tampilkan animasi loading pada tombol
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch spinner"></i> Menyimpan...';
             btn.disabled = true;
 
             try {
+                // Menyiapkan paket data (payload) untuk dikirim ke Excel
                 const payload = {
                     action: 'save_drive_url',
                     email: currentUserEmail,
-                    driveUrl: url
+                    driveUrl: urlInput
                 };
 
                 let isCanvasPreview = false;
                 try { isCanvasPreview = window.self !== window.top || window.location.hostname.includes("google") || window.location.hostname.includes("sandbox"); } catch(e) { isCanvasPreview = true; }
 
-                // Bypass database fetch jika sedang berjalan di dalam preview Canvas (Kecuali jika emailnya beneran)
+                // Bypass jika hanya mencoba di Canvas Gemini
                 if (isCanvasPreview && (!currentUserEmail || currentUserEmail.includes('demo'))) {
-                    GAS_WEB_APP_URL = url;
-                    sessionStorage.setItem('gasUrl', url);
+                    GAS_WEB_APP_URL = urlInput;
+                    sessionStorage.setItem('gasUrl', urlInput);
                     showToast('SIMULASI CANVAS: URL Drive berhasil disimpan permanen!', 'success');
                     closeSetupModal();
                 } else {
+                    // Mengirim data ke Database Pusat menggunakan fetch
                     const response = await fetch(CENTRAL_GAS_URL, {
                         method: 'POST',
                         body: JSON.stringify(payload)
                     });
+                    
                     const result = await response.json();
                     
                     if (result.status === 'success') {
-                        GAS_WEB_APP_URL = url;
-                        sessionStorage.setItem('gasUrl', url); 
-                        showToast('URL Drive berhasil disimpan permanen ke database akun Anda!', 'success');
+                        // Perbarui variabel sistem
+                        GAS_WEB_APP_URL = urlInput;
+                        sessionStorage.setItem('gasUrl', urlInput); 
+                        
+                        showToast('Berhasil! URL Drive Anda telah disimpan ke Database Pusat.', 'success');
                         closeSetupModal();
                     } else {
                         showToast('Gagal menyimpan: ' + result.message, 'error');
                     }
                 }
             } catch (err) {
-                console.error(err);
+                console.error("Fetch Error:", err);
                 showToast('Gagal terhubung ke database pusat.', 'error');
             } finally {
-                btn.innerHTML = originalHtml;
+                btn.innerHTML = originalText;
                 btn.disabled = false;
             }
         }
