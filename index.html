@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEHATI - AI | Login & Registrasi Fasyankes</title>
+    <title>SEHATI-AI | Portal Fasyankes</title>
     
     <script>
         (function() {
-            const allowedDomain = "sehati-ai26.github.io";
+            const allowedDomains = [
+                "sehati-ai26.github.io",
+                "domain-kedua-anda.github.io" // Silakan ganti dengan repo kedua
+            ];
             const currentDomain = window.location.hostname.toLowerCase();
-            
             const isLocal = currentDomain === "localhost" || currentDomain === "127.0.0.1" || currentDomain === "";
             const isCanvasPreview = window.self !== window.top || currentDomain.includes("google") || currentDomain.includes("sandbox");
             
-            if (currentDomain !== allowedDomain && !isLocal && !isCanvasPreview) {
+            if (!allowedDomains.includes(currentDomain) && !isLocal && !isCanvasPreview) {
                 document.documentElement.innerHTML = `
-                    <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#0f172a; color:#38bdf8; font-family:sans-serif; text-align:center; padding:20px;">
+                    <div style="display:flex; justify-content:center; align-items:center; height:100vh; background-color:#fdfbf7; color:#ca5c30; font-family:sans-serif; text-align:center; padding:20px;">
                         <div>
-                            <h1 style="font-size:1.8rem; margin-bottom:10px;">⚠️ LISENSI TIDAK VALID</h1>
-                            <p>Akses hanya diizinkan melalui domain resmi: <b>${allowedDomain}</b></p>
+                            <h1 style="font-size:1.8rem; margin-bottom:10px;">⚠️ AKSES DITOLAK</h1>
+                            <p style="color:#4a5568">Lisensi SEHATI tidak valid untuk domain ini.</p>
                         </div>
                     </div>`;
                 throw new Error("Unauthorized Access");
@@ -27,7 +29,7 @@
     </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script>
@@ -35,27 +37,21 @@
             theme: {
                 extend: {
                     colors: { 
-                        navy: '#0f172a', 
-                        darkblue: '#1e293b',
-                        skyblue: '#38bdf8',
-                        vibrant: '#0ea5e9'
-                    },
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-                    animation: {
-                        'blob': 'blob 7s infinite',
-                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
-                    },
-                    keyframes: {
-                        blob: {
-                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
-                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
-                        },
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        brand: {
+                            cream: '#fdfbf7',   // Background utama 
+                            surface: '#f6f2eb', // Latar aksen lembut
+                            terra: '#ca5c30',   // Warna utama (Terracotta/Bata)
+                            terradark: '#a84a24',
+                            text: '#2d3748',    // Abu-abu gelap untuk teks
+                            muted: '#718096'
                         }
+                    },
+                    fontFamily: { 
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'] 
+                    },
+                    boxShadow: {
+                        'card': '0 20px 40px -10px rgba(0,0,0,0.08)',
                     }
                 }
             }
@@ -64,296 +60,422 @@
     
     <style>
         body { 
-            background: #0f172a;
-            background: radial-gradient(circle at top right, #1e293b, #090e1a);
-            color: #f8fafc;
+            background-color: #fdfbf7; /* Cream base theme */
+            color: #2d3748;
+            min-height: 100vh;
             overflow-x: hidden;
         }
-        .glass-card {
-            background: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            border-left: 1px solid rgba(255, 255, 255, 0.15);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+
+        /* Input form modern dengan border bawah saat fokus */
+        .input-sehati {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
         }
-        .input-glow:focus {
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
-            border-color: #38bdf8;
+        .input-sehati:focus {
+            border-color: #ca5c30;
+            box-shadow: 0 0 0 3px rgba(202, 92, 48, 0.1);
+            outline: none;
         }
-        .animation-delay-2000 { animation-delay: 2s; }
-        .animation-delay-4000 { animation-delay: 4s; }
+
+        /* Transisi Form (Fade) */
+        .form-fade-enter { opacity: 0; position: absolute; width: 100%; pointer-events: none; }
+        .form-fade-enter-active { opacity: 1; transition: opacity 400ms ease; position: relative; pointer-events: auto; }
+        .form-fade-exit { opacity: 1; position: relative; width: 100%; }
+        .form-fade-exit-active { opacity: 0; transition: opacity 300ms ease; position: absolute; pointer-events: none; }
         
-        /* Animasi transisi antar form */
-        .form-container {
-            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center p-4 md:p-6 relative">
+<body class="selection:bg-brand-terra selection:text-white relative flex items-center justify-center">
 
-    <div class="fixed inset-0 w-full h-full overflow-hidden -z-10 pointer-events-none flex justify-center items-center">
-        <div class="absolute top-[10%] left-[20%] w-72 h-72 bg-skyblue opacity-20 blur-[100px] rounded-full mix-blend-screen animate-blob"></div>
-        <div class="absolute top-[20%] right-[20%] w-72 h-72 bg-vibrant opacity-20 blur-[100px] rounded-full mix-blend-screen animate-blob animation-delay-2000"></div>
-        <div class="absolute bottom-[10%] left-[40%] w-80 h-80 bg-indigo-500 opacity-20 blur-[120px] rounded-full mix-blend-screen animate-blob animation-delay-4000"></div>
+    <!-- Elemen Background: Gelombang bawah & Jaringan AI (Nodes) -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+        <!-- Gelombang warna terracotta di pojok kiri bawah -->
+        <svg class="absolute bottom-0 left-0 w-[80vw] md:w-[50vw] text-brand-terra opacity-80" viewBox="0 0 800 400" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 400V150C100 120 200 180 300 160C400 140 450 80 550 90C650 100 750 180 800 200V400H0Z" opacity="0.3"/>
+            <path d="M0 400V250C150 220 250 300 400 280C550 260 650 200 800 220V400H0Z"/>
+        </svg>
+
+        <!-- Jaringan AI Halus (Network Nodes) di tengah-kanan layar -->
+        <svg class="absolute top-[20%] right-[10%] w-[40vw] h-[40vw] text-brand-terra/10 animate-[pulse_6s_ease-in-out_infinite]" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="0.5">
+            <circle cx="50" cy="50" r="2" fill="currentColor"/><circle cx="150" cy="70" r="2" fill="currentColor"/><circle cx="100" cy="130" r="2" fill="currentColor"/><circle cx="180" cy="160" r="2" fill="currentColor"/><circle cx="20" cy="150" r="2" fill="currentColor"/>
+            <path d="M50 50L150 70M150 70L100 130M50 50L100 130M100 130L180 160M150 70L180 160M50 50L20 150M20 150L100 130"/>
+        </svg>
     </div>
 
-    <div class="w-full max-w-[1000px] flex flex-col md:flex-row items-stretch gap-8 md:gap-4 opacity-0 animate-fade-in-up">
+    <div class="w-full max-w-[1200px] mx-auto px-4 py-8 md:py-12 flex flex-col lg:flex-row items-center gap-12 lg:gap-8 z-10">
         
-        <div class="md:w-1/2 p-4 md:p-12 flex flex-col justify-center text-center md:text-left z-10">
-            <div class="inline-flex items-center gap-4 mb-6 justify-center md:justify-start">
-                <div class="w-14 h-14 bg-gradient-to-br from-skyblue to-vibrant rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.4)]">
-                    <i class="fa-solid fa-hospital-user text-white text-2xl"></i>
+        <!-- BAGIAN KIRI: Branding & Teks -->
+        <div class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left pt-10 lg:pt-0">
+            <!-- Logo area -->
+            <div class="flex items-center gap-3 justify-center lg:justify-start mb-10">
+                <div class="relative flex items-center justify-center w-12 h-12">
+                    <i class="fa-solid fa-circle-nodes text-brand-terra text-3xl"></i>
                 </div>
-                <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-300">SEHATI - AI</h1>
+                <div class="text-center lg:text-left">
+                    <h1 class="text-xl font-bold text-brand-text tracking-tight flex items-center gap-2 justify-center lg:justify-start">
+                        SEHATI-AI
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-terra opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-terra"></span>
+                        </span>
+                    </h1>
+                </div>
             </div>
-            
-            <h2 class="text-2xl md:text-3xl font-bold text-skyblue mb-5 leading-snug">
-                Sistem Edukasi & Harmonisasi Tata Kelola Mutu Integratif <br class="hidden md:block">Berbasis Artificial Intelegensi
+
+            <!-- Teks Utama -->
+            <h2 class="text-3xl md:text-4xl font-serif font-bold text-brand-text leading-[1.3] mb-4">
+                Sistem Edukasi & Harmonisasi <br class="hidden xl:block">
+                Administrasi Tata Kelola Mutu Integratif <br class="hidden xl:block">
+                <span class="text-brand-terra">Berbasis Artificial Intelegensi</span>
             </h2>
-            <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-10">
-                Platform terintegrasi untuk asistensi penyusunan dokumen layanan kesehatan berbasis kecerdasan buatan, disesuaikan dengan standar akreditasi fasyankes.
-            </p>
             
-            <div class="grid grid-cols-2 gap-4 hidden md:grid">
-                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-                    <div class="w-8 h-8 rounded-full bg-skyblue/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-bolt text-skyblue text-sm"></i>
+            <div class="w-16 h-1 bg-brand-terra/40 mb-6 mx-auto lg:mx-0 rounded-full"></div>
+            
+            <!-- Deskripsi -->
+            <p class="text-brand-muted text-sm md:text-base leading-relaxed mb-10 max-w-lg mx-auto lg:mx-0">
+                <span class="font-bold text-brand-text">Satu platform untuk administrasi kesehatan berbasis AI.</span> Kelola mutu layanan, risiko, keselamatan pasien, PPI, dan dokumentasi layanan kesehatan secara terintegrasi, akurat, dan cerdas disesuaikan dengan standar akreditasi fasyankes.
+            </p>
+
+            <!-- Fitur-fitur -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl mx-auto lg:mx-0">
+                <div class="text-center lg:text-left">
+                    <div class="w-10 h-10 rounded-full bg-brand-terra/10 flex items-center justify-center mb-3 mx-auto lg:mx-0 text-brand-terra">
+                        <i class="fa-solid fa-chart-pie text-lg"></i>
                     </div>
-                    <span class="font-semibold text-slate-200 text-sm block">Proses Instan</span>
-                    <span class="text-xs text-slate-500 mt-1 block">Efisiensi dokumen</span>
+                    <h4 class="text-xs font-bold text-brand-text mb-1">Indikator Mutu</h4>
+                    <p class="text-[10px] text-brand-muted leading-relaxed">Pantau indikator & capaian faskes.</p>
                 </div>
-                <div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors group">
-                    <div class="w-8 h-8 rounded-full bg-skyblue/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                        <i class="fa-solid fa-shield-check text-skyblue text-sm"></i>
+                <div class="text-center lg:text-left">
+                    <div class="w-10 h-10 rounded-full bg-brand-terra/10 flex items-center justify-center mb-3 mx-auto lg:mx-0 text-brand-terra">
+                        <i class="fa-solid fa-shield-heart text-lg"></i>
                     </div>
-                    <span class="font-semibold text-slate-200 text-sm block">Akses Valid</span>
-                    <span class="text-xs text-slate-500 mt-1 block">Sistem approval pusat</span>
+                    <h4 class="text-xs font-bold text-brand-text mb-1">Keselamatan</h4>
+                    <p class="text-[10px] text-brand-muted leading-relaxed">Investigasi IKP & insiden faskes.</p>
+                </div>
+                <div class="text-center lg:text-left">
+                    <div class="w-10 h-10 rounded-full bg-brand-terra/10 flex items-center justify-center mb-3 mx-auto lg:mx-0 text-brand-terra">
+                        <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                    </div>
+                    <h4 class="text-xs font-bold text-brand-text mb-1">Manajemen Risiko</h4>
+                    <p class="text-[10px] text-brand-muted leading-relaxed">Identifikasi & mitigasi risiko.</p>
+                </div>
+                <div class="text-center lg:text-left">
+                    <div class="w-10 h-10 rounded-full bg-brand-terra/10 flex items-center justify-center mb-3 mx-auto lg:mx-0 text-brand-terra">
+                        <i class="fa-solid fa-folder-open text-lg"></i>
+                    </div>
+                    <h4 class="text-xs font-bold text-brand-text mb-1">Dok. Manajemen</h4>
+                    <p class="text-[10px] text-brand-muted leading-relaxed">Generator instrumen & dokumen.</p>
                 </div>
             </div>
         </div>
 
-        <div class="md:w-1/2 z-10">
-            <div class="glass-card rounded-[2rem] p-8 md:p-10 relative overflow-hidden h-full flex flex-col justify-center">
-                <div class="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-skyblue/20 to-transparent rounded-full blur-xl"></div>
-
-                <!-- ALERT GLOBAL (Digunakan untuk form aktif) -->
-                <div id="alertMessage" class="hidden w-full text-xs p-4 rounded-xl flex items-center gap-3 transition-all mb-4">
-                    <i id="alertIcon" class="fa-solid"></i>
-                    <span id="alertText"></span>
+        <!-- BAGIAN KANAN: Form Card -->
+        <div class="w-full lg:w-1/2 flex justify-center lg:justify-end">
+            <div class="w-full max-w-[460px] bg-white rounded-[24px] shadow-card p-6 sm:p-10 relative border border-brand-surface overflow-hidden">
+                
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-serif font-bold text-brand-text mb-1">Selamat Datang</h3>
+                    <p class="text-brand-muted text-sm">di <span class="font-bold text-brand-terra">SEHATI-AI</span></p>
+                    <div class="w-10 h-0.5 bg-brand-terra mx-auto mt-3"></div>
                 </div>
 
-                <!-- ============================ -->
-                <!-- VIEW 1: FORM LOGIN           -->
-                <!-- ============================ -->
-                <div id="loginView" class="form-container">
-                    <div class="mb-8">
-                        <h3 class="text-3xl font-bold text-white mb-2">Selamat Datang</h3>
-                        <p class="text-slate-400 text-sm">Masukkan kredensial fasyankes Anda.</p>
-                    </div>
+                <p class="text-center text-xs text-brand-muted mb-6">Silakan masuk atau daftar untuk melanjutkan</p>
+
+                <!-- Custom Tab Navigation -->
+                <div class="flex border-b border-gray-200 mb-6 relative">
+                    <button type="button" onclick="switchTab('login')" id="btnTabLogin" class="flex-1 pb-3 text-sm font-bold text-brand-text transition-colors relative z-10 focus:outline-none">Masuk</button>
+                    <button type="button" onclick="switchTab('register')" id="btnTabReg" class="flex-1 pb-3 text-sm font-medium text-brand-muted transition-colors relative z-10 focus:outline-none">Registrasi</button>
+                    <!-- Indikator Garis Bawah -->
+                    <div id="tabIndicator" class="absolute bottom-0 left-0 w-1/2 h-[2px] bg-brand-terra transition-transform duration-300 ease-in-out"></div>
+                </div>
+
+                <!-- Alert Message -->
+                <div id="alertMessage" class="hidden w-full text-xs p-3 rounded-lg flex items-start gap-2.5 transition-all mb-5 border">
+                    <i id="alertIcon" class="fa-solid mt-0.5"></i>
+                    <span id="alertText" class="leading-relaxed font-medium"></span>
+                </div>
+
+                <div class="relative min-h-[300px]">
                     
-                    <form onsubmit="handleLogin(event)" class="space-y-5">
-                        
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kategori Layanan</label>
-                            <div class="relative">
-                                <select id="loginFasyankes" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl px-4 py-3.5 text-sm text-white outline-none input-glow transition-all appearance-none cursor-pointer">
-                                    <option value="" class="bg-navy">Pilih Jenis Fasyankes</option>
-                                    <option value="Dinkes" class="bg-navy">Dinas Kesehatan (Admin)</option>
-                                    <option value="Puskesmas" class="bg-navy">Puskesmas</option>
-                                    <option value="Klinik" class="bg-navy">Klinik / Praktik Mandiri</option>
-                                    <option value="Rumah Sakit" class="bg-navy">Rumah Sakit</option>
-                                </select>
-                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                    <!-- ============================ -->
+                    <!-- VIEW 1: FORM LOGIN           -->
+                    <!-- ============================ -->
+                    <div id="loginView" class="form-fade-enter-active">
+                        <form onsubmit="handleLogin(event)" class="space-y-4">
+                            
+                            <div>
+                                <!-- Konsep Melayang: Input teks readonly yang memanggil modal saat diklik (NON-SELECT HTML) -->
+                                <div class="relative cursor-pointer" onclick="openFasyankesModal('login')">
+                                    <i class="fa-solid fa-hospital absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm z-10 pointer-events-none"></i>
+                                    <input type="hidden" id="loginFasyankes" required>
+                                    <input type="text" id="loginFasyankesDisplay" readonly required class="w-full input-sehati rounded-xl pl-10 pr-4 py-3.5 text-sm text-brand-text bg-white cursor-pointer" placeholder="Pilih Kategori Layanan">
+                                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Email Terdaftar</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                                <input type="email" id="loginEmail" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white outline-none input-glow transition-all" placeholder="admin@fasyankes.id">
+                            <div>
+                                <div class="relative">
+                                    <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input type="email" id="loginEmail" required class="w-full input-sehati rounded-xl pl-10 pr-4 py-3.5 text-sm text-brand-text" placeholder="Email Terdaftar">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kata Sandi</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                                <input type="password" id="loginPassword" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-12 py-3.5 text-sm text-white outline-none input-glow transition-all" placeholder="••••••••">
-                                <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-skyblue transition-colors outline-none focus:outline-none">
-                                    <i id="eyeIconLogin" class="fa-solid fa-eye-slash text-xs"></i>
-                                </button>
+                            <div>
+                                <div class="relative">
+                                    <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input type="password" id="loginPassword" required class="w-full input-sehati rounded-xl pl-10 pr-12 py-3.5 text-sm text-brand-text" placeholder="Password">
+                                    <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-brand-terra transition-colors outline-none rounded-lg focus:outline-none">
+                                        <i id="eyeIconLogin" class="fa-solid fa-eye-slash text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
 
-                        <button type="submit" class="w-full bg-gradient-to-r from-skyblue to-vibrant text-white font-extrabold py-4 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 mt-6 uppercase tracking-wider text-sm flex justify-center items-center gap-2">
-                            <span>Masuk ke Dashboard</span>
-                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                        </button>
-                    </form>
+                            <button type="submit" class="w-full bg-brand-terra hover:bg-brand-terradark text-white font-bold py-3.5 rounded-xl mt-2 transition-all text-sm flex justify-center items-center gap-2 active:scale-[0.98]">
+                                Masuk <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </form>
+                    </div>
 
-                    <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                        <p class="text-xs text-slate-400">
-                            Belum memiliki akses fasyankes? <br class="md:hidden mt-1">
-                            <button type="button" onclick="switchView('register')" class="text-skyblue font-bold hover:text-white hover:underline transition-colors ml-1 outline-none">Registrasi Akun Baru</button>
-                        </p>
+                    <!-- ============================ -->
+                    <!-- VIEW 2: FORM REGISTRASI      -->
+                    <!-- ============================ -->
+                    <div id="registerView" class="hidden form-fade-exit">
+                        <form onsubmit="handleRegister(event)" class="space-y-4">
+                            
+                            <div>
+                                <!-- Konsep Melayang: Input teks readonly yang memanggil modal saat diklik -->
+                                <div class="relative cursor-pointer" onclick="openFasyankesModal('register')">
+                                    <i class="fa-solid fa-hospital absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm z-10 pointer-events-none"></i>
+                                    <input type="hidden" id="regFasyankes" required>
+                                    <input type="text" id="regFasyankesDisplay" readonly required class="w-full input-sehati rounded-xl pl-10 pr-4 py-3 text-sm text-brand-text bg-white cursor-pointer" placeholder="Pilih Kategori Layanan">
+                                    <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs pointer-events-none"></i>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="relative">
+                                    <i class="fa-regular fa-building absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input type="text" id="regUnitKerja" required class="w-full input-sehati rounded-xl pl-10 pr-4 py-3 text-sm text-brand-text" placeholder="Nama Unit Kerja (Misal: Puskesmas A)">
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="relative">
+                                    <i class="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input type="email" id="regEmail" required class="w-full input-sehati rounded-xl pl-10 pr-4 py-3 text-sm text-brand-text" placeholder="Email Fasyankes">
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="relative">
+                                    <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input type="password" id="regPassword" required class="w-full input-sehati rounded-xl pl-10 pr-12 py-3 text-sm text-brand-text" placeholder="Buat Password">
+                                    <button type="button" onclick="togglePassword('regPassword', 'eyeIconReg')" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-brand-terra transition-colors outline-none rounded-lg focus:outline-none">
+                                        <i id="eyeIconReg" class="fa-solid fa-eye-slash text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full bg-brand-terra hover:bg-brand-terradark text-white font-bold py-3.5 rounded-xl mt-2 transition-all text-sm flex justify-center items-center gap-2 active:scale-[0.98]">
+                                Registrasi <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <!-- Keamanan Terjamin Badge -->
+                <div class="mt-6 bg-brand-surface rounded-xl p-4 flex items-center gap-4">
+                    <div class="w-8 h-8 rounded-full border border-brand-terra/30 flex items-center justify-center text-brand-terra shrink-0">
+                        <i class="fa-solid fa-shield-halved text-sm"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-brand-text">Keamanan Terjamin</h4>
+                        <p class="text-[10px] text-brand-muted mt-0.5 leading-tight">Data instansi dilindungi standar keamanan tersertifikasi dengan enkripsi menyeluruh.</p>
                     </div>
                 </div>
 
-                <!-- ============================ -->
-                <!-- VIEW 2: FORM REGISTRASI      -->
-                <!-- ============================ -->
-                <div id="registerView" class="form-container hidden">
-                    <div class="mb-6">
-                        <h3 class="text-3xl font-bold text-white mb-2">Daftar Fasyankes</h3>
-                        <p class="text-slate-400 text-sm">Lengkapi data untuk mendapatkan akses sistem.</p>
-                    </div>
-                    
-                    <form onsubmit="handleRegister(event)" class="space-y-4">
-                        
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kategori Layanan</label>
-                            <div class="relative">
-                                <select id="regFasyankes" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white outline-none input-glow transition-all appearance-none cursor-pointer">
-                                    <option value="" class="bg-navy">Pilih Jenis Fasyankes</option>
-                                    <option value="Dinkes" class="bg-navy">Dinas Kesehatan (Admin)</option>
-                                    <option value="Puskesmas" class="bg-navy">Puskesmas</option>
-                                    <option value="Klinik" class="bg-navy">Klinik / Praktik Mandiri</option>
-                                    <option value="Rumah Sakit" class="bg-navy">Rumah Sakit</option>
-                                </select>
-                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Nama Unit Kerja</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-hospital absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                                <input type="text" id="regUnitKerja" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3 text-sm text-white outline-none input-glow transition-all" placeholder="Misal: Puskesmas Melati">
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Email</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                                <input type="email" id="regEmail" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3 text-sm text-white outline-none input-glow transition-all" placeholder="admin@fasyankes.id">
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 group">
-                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kata Sandi</label>
-                            <div class="relative">
-                                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                                <input type="password" id="regPassword" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-12 py-3 text-sm text-white outline-none input-glow transition-all" placeholder="••••••••">
-                                <button type="button" onclick="togglePassword('regPassword', 'eyeIconReg')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-skyblue transition-colors outline-none focus:outline-none">
-                                    <i id="eyeIconReg" class="fa-solid fa-eye-slash text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full bg-gradient-to-r from-vibrant to-skyblue text-white font-extrabold py-3.5 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 mt-4 uppercase tracking-wider text-sm flex justify-center items-center gap-2">
-                            <span>Daftar Akun</span>
-                            <i class="fa-solid fa-user-plus"></i>
-                        </button>
-                    </form>
-
-                    <div class="mt-6 pt-5 border-t border-white/10 text-center">
-                        <p class="text-xs text-slate-400">
-                            Sudah memiliki akses fasyankes? <br class="md:hidden mt-1">
-                            <button type="button" onclick="switchView('login')" class="text-skyblue font-bold hover:text-white hover:underline transition-colors ml-1 outline-none">Masuk di sini</button>
-                        </p>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <div id="loader" class="hidden fixed inset-0 z-50 bg-navy/95 backdrop-blur-xl flex flex-col justify-center items-center">
-        <div class="relative">
-            <div class="w-16 h-16 border-4 border-slate-700 border-t-skyblue rounded-full animate-spin"></div>
-            <div class="absolute inset-0 flex items-center justify-center">
-                <i class="fa-solid fa-shield-check text-skyblue"></i>
+    <div class="absolute bottom-4 text-center w-full z-10 text-[10px] text-brand-muted opacity-70">
+        &copy; 2026 SEHATI-AI. All rights reserved.
+    </div>
+
+    <!-- Modal Kategori Layanan Melayang (Pengganti tag <select>) -->
+    <div id="fasyankesModal" class="hidden fixed inset-0 z-[60] bg-brand-text/40 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity duration-300 opacity-0">
+        <div id="fasyankesModalBox" class="bg-white rounded-[20px] w-full max-w-[340px] shadow-2xl p-6 transform scale-95 transition-transform duration-300 border border-brand-cream">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-brand-text font-bold text-base font-serif">Pilih Layanan</h3>
+                <button type="button" onclick="closeFasyankesModal()" class="text-gray-400 hover:text-brand-terra transition-colors"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <button type="button" onclick="selectFasyankes('Dinkes', 'Dinas Kesehatan (Admin)')" class="w-full p-3.5 rounded-xl border border-brand-surface bg-brand-cream hover:border-brand-terra hover:bg-brand-terra/5 text-left text-sm font-semibold text-brand-text transition-all group flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center group-hover:text-brand-terra shadow-sm"><i class="fa-solid fa-building-user text-xs"></i></div>
+                    Dinas Kesehatan (Admin)
+                </button>
+                <button type="button" onclick="selectFasyankes('Puskesmas', 'Puskesmas')" class="w-full p-3.5 rounded-xl border border-brand-surface bg-brand-cream hover:border-brand-terra hover:bg-brand-terra/5 text-left text-sm font-semibold text-brand-text transition-all group flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center group-hover:text-brand-terra shadow-sm"><i class="fa-solid fa-house-medical text-xs"></i></div>
+                    Puskesmas
+                </button>
+                <button type="button" onclick="selectFasyankes('Klinik', 'Klinik / Praktik Mandiri')" class="w-full p-3.5 rounded-xl border border-brand-surface bg-brand-cream hover:border-brand-terra hover:bg-brand-terra/5 text-left text-sm font-semibold text-brand-text transition-all group flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center group-hover:text-brand-terra shadow-sm"><i class="fa-solid fa-stethoscope text-xs"></i></div>
+                    Klinik / Praktik Mandiri
+                </button>
+                <button type="button" onclick="selectFasyankes('Rumah Sakit', 'Rumah Sakit')" class="w-full p-3.5 rounded-xl border border-brand-surface bg-brand-cream hover:border-brand-terra hover:bg-brand-terra/5 text-left text-sm font-semibold text-brand-text transition-all group flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center group-hover:text-brand-terra shadow-sm"><i class="fa-solid fa-hospital text-xs"></i></div>
+                    Rumah Sakit
+                </button>
             </div>
         </div>
-        <p id="loaderText" class="text-skyblue font-bold text-xs mt-6 tracking-[0.3em] uppercase animate-pulse">Memverifikasi Akses...</p>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="hidden fixed inset-0 z-[70] bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center transition-all duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center border border-gray-100">
+            <div class="w-12 h-12 border-4 border-brand-cream border-t-brand-terra rounded-full animate-spin"></div>
+            <p id="loaderText" class="text-brand-text font-bold text-xs mt-4 uppercase tracking-widest">Memproses...</p>
+        </div>
     </div>
 
     <script>
-        // URL API dari Google Apps Script Anda (TELAH DIPERBARUI)
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbzUPJ2v7DNN4t2cpuWo5pTMrURZH9pdCeskOrL6G3zAfJXhwDrDAD_6yjOGXtlzul6O/exec";
+        // URL API Google Apps Script - URL Anda tidak diubah sesuai instruksi
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxSY00llFZ1ggKvIGGpaHB9hcPhurvm4Kc1bf2P8WQgeM4E5ooRQRtk_6twpzXveZVu/exec";
 
-        // Fungsi Tampilkan/Sembunyikan Password
+        // Kontrol Modal Fasyankes (Floating Select)
+        let activeFasyankesTarget = '';
+
+        function openFasyankesModal(target) {
+            activeFasyankesTarget = target;
+            const modal = document.getElementById('fasyankesModal');
+            const box = document.getElementById('fasyankesModalBox');
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeFasyankesModal() {
+            const modal = document.getElementById('fasyankesModal');
+            const box = document.getElementById('fasyankesModalBox');
+            
+            modal.classList.add('opacity-0');
+            box.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function selectFasyankes(value, text) {
+            if (activeFasyankesTarget === 'login') {
+                document.getElementById('loginFasyankes').value = value;
+                document.getElementById('loginFasyankesDisplay').value = text;
+            } else if (activeFasyankesTarget === 'register') {
+                document.getElementById('regFasyankes').value = value;
+                document.getElementById('regFasyankesDisplay').value = text;
+            }
+            closeFasyankesModal();
+        }
+
         function togglePassword(inputId, iconId) {
             const input = document.getElementById(inputId);
             const icon = document.getElementById(iconId);
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove("fa-eye-slash");
-                icon.classList.add("fa-eye");
+                icon.classList.replace("fa-eye-slash", "fa-eye");
             } else {
                 input.type = "password";
-                icon.classList.remove("fa-eye");
-                icon.classList.add("fa-eye-slash");
+                icon.classList.replace("fa-eye", "fa-eye-slash");
             }
         }
 
-        // Fungsi Mengganti Tampilan (Login <-> Register)
-        function switchView(viewName) {
+        function switchTab(target) {
             const loginView = document.getElementById('loginView');
             const registerView = document.getElementById('registerView');
+            const indicator = document.getElementById('tabIndicator');
+            const btnLogin = document.getElementById('btnTabLogin');
+            const btnReg = document.getElementById('btnTabReg');
             const alertBox = document.getElementById('alertMessage');
             
-            // Sembunyikan notifikasi setiap pindah tab
-            alertBox.classList.add('hidden');
+            alertBox.classList.add('hidden'); // Reset alert
 
-            if (viewName === 'register') {
-                loginView.classList.add('hidden');
-                registerView.classList.remove('hidden');
+            if (target === 'register') {
+                // Geser garis bawah ke kanan
+                indicator.style.transform = 'translateX(100%)';
+                
+                // Ubah gaya teks tab
+                btnReg.classList.replace('text-brand-muted', 'text-brand-text');
+                btnReg.classList.replace('font-medium', 'font-bold');
+                btnLogin.classList.replace('text-brand-text', 'text-brand-muted');
+                btnLogin.classList.replace('font-bold', 'font-medium');
+                
+                // Animasi Form
+                loginView.className = 'form-fade-exit-active';
+                setTimeout(() => {
+                    loginView.classList.add('hidden');
+                    registerView.classList.remove('hidden');
+                    registerView.className = 'form-fade-enter';
+                    void registerView.offsetWidth; // Reflow
+                    registerView.className = 'form-fade-enter-active';
+                }, 300);
+
             } else {
-                registerView.classList.add('hidden');
-                loginView.classList.remove('hidden');
+                // Geser garis bawah ke kiri
+                indicator.style.transform = 'translateX(0)';
+                
+                // Ubah gaya teks tab
+                btnLogin.classList.replace('text-brand-muted', 'text-brand-text');
+                btnLogin.classList.replace('font-medium', 'font-bold');
+                btnReg.classList.replace('text-brand-text', 'text-brand-muted');
+                btnReg.classList.replace('font-bold', 'font-medium');
+                
+                // Animasi Form
+                registerView.className = 'form-fade-exit-active';
+                setTimeout(() => {
+                    registerView.classList.add('hidden');
+                    loginView.classList.remove('hidden');
+                    loginView.className = 'form-fade-enter';
+                    void loginView.offsetWidth; // Reflow
+                    loginView.className = 'form-fade-enter-active';
+                }, 300);
             }
         }
 
-        // Fungsi Menampilkan Notifikasi Terpusat
         function showAlert(message, type = 'error') {
             const alertBox = document.getElementById('alertMessage');
             const alertIcon = document.getElementById('alertIcon');
             const alertText = document.getElementById('alertText');
             
-            // Reset class
-            alertBox.className = "w-full text-xs p-4 rounded-xl flex items-center gap-3 transition-all mb-4";
+            alertBox.classList.remove('bg-red-50', 'border-red-200', 'text-red-700', 'bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+            alertIcon.className = "fa-solid mt-0.5";
             
             if (type === 'success') {
-                alertBox.classList.add('bg-emerald-500/20', 'border', 'border-emerald-500/50', 'text-emerald-200');
-                alertIcon.className = "fa-solid fa-circle-check text-emerald-400";
+                alertBox.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+                alertIcon.classList.add('fa-circle-check');
             } else {
-                alertBox.classList.add('bg-red-500/20', 'border', 'border-red-500/50', 'text-red-200');
-                alertIcon.className = "fa-solid fa-circle-exclamation text-red-400";
+                alertBox.classList.add('bg-red-50', 'border-red-200', 'text-red-700');
+                alertIcon.classList.add('fa-circle-exclamation');
             }
 
             alertText.innerText = message;
             alertBox.classList.remove('hidden');
             
-            // Sembunyikan otomatis
-            setTimeout(() => {
-                alertBox.classList.add('hidden');
-            }, 6000);
+            setTimeout(() => { alertBox.classList.add('hidden'); }, 6000);
         }
 
-        // ==========================================
-        // FUNGSI UTAMA: LOGIN
-        // ==========================================
         async function handleLogin(e) {
             e.preventDefault();
-            
             document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('loaderText').innerText = "Memverifikasi Kredensial...";
+            document.getElementById('loaderText').innerText = "Autentikasi...";
             document.getElementById('alertMessage').classList.add('hidden');
             
             const payload = {
@@ -364,20 +486,14 @@
             };
 
             try {
-                const response = await fetch(GAS_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(payload) 
-                });
-                
+                const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await response.json();
                 
                 if (result.status === 'success') {
                     const cleanEmail = payload.email.trim();
-                    
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('unitKerja', result.unitKerja);
                     sessionStorage.setItem('kategori', payload.fasyankes);
-                    
                     sessionStorage.setItem('userEmail', cleanEmail);
                     localStorage.setItem('userEmail', cleanEmail); 
 
@@ -392,21 +508,17 @@
                     showAlert("Akses Ditolak: " + result.message, 'error');
                 }
             } catch (err) {
-                showAlert("Kesalahan koneksi ke Database Pusat. Silakan coba lagi.", 'error');
+                showAlert("Kesalahan koneksi ke server. Silakan coba lagi.", 'error');
                 console.error(err);
             } finally {
                 document.getElementById('loader').classList.add('hidden');
             }
         }
 
-        // ==========================================
-        // FUNGSI UTAMA: REGISTRASI
-        // ==========================================
         async function handleRegister(e) {
             e.preventDefault();
-            
             document.getElementById('loader').classList.remove('hidden');
-            document.getElementById('loaderText').innerText = "Mendaftarkan Fasyankes...";
+            document.getElementById('loaderText').innerText = "Inisialisasi...";
             document.getElementById('alertMessage').classList.add('hidden');
 
             const payload = {
@@ -418,29 +530,24 @@
             };
 
             try {
-                // Asumsi backend Google Apps Script menerima property ini dengan format yang sama
-                const response = await fetch(GAS_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify(payload) 
-                });
-                
+                const response = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify(payload) });
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Sukses -> Bersihkan form, pindah tab ke login, dan isi otomatis email
                     document.getElementById('loginEmail').value = payload.email;
                     document.getElementById('loginFasyankes').value = payload.fasyankes;
+                    document.getElementById('loginFasyankesDisplay').value = document.getElementById('regFasyankesDisplay').value;
                     
-                    // Kosongkan form reg
                     e.target.reset(); 
+                    document.getElementById('regFasyankesDisplay').value = '';
                     
-                    switchView('login');
-                    showAlert("Registrasi Berhasil! Silakan masuk dengan kata sandi Anda.", 'success');
+                    switchTab('login');
+                    showAlert("Registrasi Berhasil! Silakan masuk.", 'success');
                 } else {
-                    showAlert("Registrasi Gagal: " + (result.message || "Data sudah ada atau invalid."), 'error');
+                    showAlert("Registrasi Gagal: " + (result.message || "Data invalid."), 'error');
                 }
             } catch (err) {
-                showAlert("Gagal terhubung ke Database Pusat. Cek koneksi Anda.", 'error');
+                showAlert("Koneksi gagal ke server pusat.", 'error');
                 console.error(err);
             } finally {
                 document.getElementById('loader').classList.add('hidden');
