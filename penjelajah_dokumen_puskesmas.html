@@ -80,10 +80,11 @@
         </div>
         
         <div class="flex items-center gap-3">
-            <a href="#" class="flex items-center gap-2 bg-slate-100 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-200 transition">
+            <!-- Tombol Kembali yang sudah diperbaiki logic-nya -->
+            <button onclick="backToDashboard(event)" class="flex items-center gap-2 bg-slate-100 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-200 transition focus:outline-none focus:ring-2 focus:ring-slate-300">
                 <i class="fa-solid fa-arrow-left"></i> Kembali
-            </a>
-            <button onclick="openSetupModal()" class="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition shadow-md">
+            </button>
+            <button onclick="openSetupModal()" class="flex items-center gap-2 bg-slate-800 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-700 transition shadow-md focus:outline-none focus:ring-2 focus:ring-slate-500">
                 <i class="fa-solid fa-gear"></i> Setup Drive
             </button>
         </div>
@@ -263,6 +264,33 @@ function doOptions(e) {
     </div>
 
     <script>
+        // FUNGSI KEMBALI KE DASHBOARD YANG AMAN DARI BLOKIR CORS IFRAME
+        function backToDashboard(event) {
+            showToast('Mengarahkan ke Dashboard Utama...', 'loading');
+            
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            setTimeout(() => {
+                try {
+                    if (document.referrer !== "" && document.referrer.indexOf(window.location.hostname) !== -1) {
+                        window.location.href = document.referrer;
+                    } else if (window.history.length > 1) {
+                        window.history.back();
+                    } else {
+                        showToast('Simulasi: Anda sudah kembali ke Dashboard Utama.', 'success');
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    }
+                } catch (e) {
+                    console.log("Navigasi iframe dibatasi:", e);
+                    showToast('Simulasi (Iframe): Kembali ke Dashboard dipicu.', 'success');
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }, 1000);
+        }
         
         // API Database Pusat (URL TELAH DIPERBARUI)
         const CENTRAL_GAS_URL = "https://script.google.com/macros/s/AKfycbyz0WCr1nW8aH_ExPZnFvbxvUZt65PpDAf8L7pdb4j2KE8eKkV3cOAZcePbuboMK31T/exec";
