@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEHATI - AI | Login Fasyankes</title>
+    <title>SEHATI - AI | Login & Registrasi Fasyankes</title>
     
     <script>
         (function() {
-            // PERBAIKAN: Gunakan huruf kecil semua untuk domain patokan
             const allowedDomain = "sehati-ai26.github.io";
-            
-            // PERBAIKAN: Paksa URL yang terbaca dari browser menjadi huruf kecil
             const currentDomain = window.location.hostname.toLowerCase();
             
-            // Bypass untuk localhost dan lingkungan pratinjau
             const isLocal = currentDomain === "localhost" || currentDomain === "127.0.0.1" || currentDomain === "";
             const isCanvasPreview = window.self !== window.top || currentDomain.includes("google") || currentDomain.includes("sandbox");
             
@@ -89,6 +85,11 @@
         }
         .animation-delay-2000 { animation-delay: 2s; }
         .animation-delay-4000 { animation-delay: 4s; }
+        
+        /* Animasi transisi antar form */
+        .form-container {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
     </style>
 </head>
 
@@ -102,7 +103,6 @@
 
     <div class="w-full max-w-[1000px] flex flex-col md:flex-row items-stretch gap-8 md:gap-4 opacity-0 animate-fade-in-up">
         
-        <!-- Bagian Kiri: Teks Branding -->
         <div class="md:w-1/2 p-4 md:p-12 flex flex-col justify-center text-center md:text-left z-10">
             <div class="inline-flex items-center gap-4 mb-6 justify-center md:justify-start">
                 <div class="w-14 h-14 bg-gradient-to-br from-skyblue to-vibrant rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(56,189,248,0.4)]">
@@ -112,7 +112,7 @@
             </div>
             
             <h2 class="text-2xl md:text-3xl font-bold text-skyblue mb-5 leading-snug">
-                Solusi Cerdas <br class="hidden md:block">Administrasi Kesehatan
+                Sistem Edukasi & Harmonisasi Tata Kelola Mutu Integratif <br class="hidden md:block">Berbasis Artificial Intelegensi
             </h2>
             <p class="text-slate-400 text-sm md:text-base leading-relaxed mb-10">
                 Platform terintegrasi untuk asistensi penyusunan dokumen layanan kesehatan berbasis kecerdasan buatan, disesuaikan dengan standar akreditasi fasyankes.
@@ -137,66 +137,137 @@
         </div>
 
         <div class="md:w-1/2 z-10">
-            <div class="glass-card rounded-[2rem] p-8 md:p-10 relative overflow-hidden">
+            <div class="glass-card rounded-[2rem] p-8 md:p-10 relative overflow-hidden h-full flex flex-col justify-center">
                 <div class="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-skyblue/20 to-transparent rounded-full blur-xl"></div>
 
-                <div class="mb-8">
-                    <h3 class="text-3xl font-bold text-white mb-2">Selamat Datang</h3>
-                    <p class="text-slate-400 text-sm">Masukkan kredensial fasyankes Anda.</p>
+                <!-- ALERT GLOBAL (Digunakan untuk form aktif) -->
+                <div id="alertMessage" class="hidden w-full text-xs p-4 rounded-xl flex items-center gap-3 transition-all mb-4">
+                    <i id="alertIcon" class="fa-solid"></i>
+                    <span id="alertText"></span>
                 </div>
-                
-                <form onsubmit="handleLogin(event)" class="space-y-5">
+
+                <!-- ============================ -->
+                <!-- VIEW 1: FORM LOGIN           -->
+                <!-- ============================ -->
+                <div id="loginView" class="form-container">
+                    <div class="mb-8">
+                        <h3 class="text-3xl font-bold text-white mb-2">Selamat Datang</h3>
+                        <p class="text-slate-400 text-sm">Masukkan kredensial fasyankes Anda.</p>
+                    </div>
                     
-                    <!-- Kotak Notifikasi Alert -->
-                    <div id="alertMessage" class="hidden w-full bg-red-500/20 border border-red-500/50 text-red-200 text-xs p-4 rounded-xl flex items-center gap-3 transition-all">
-                        <i class="fa-solid fa-circle-exclamation text-red-400"></i>
-                        <span id="alertText"></span>
-                    </div>
-
-                    <div class="space-y-2 group">
-                        <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kategori Layanan</label>
-                        <div class="relative">
-                            <select id="loginFasyankes" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl px-4 py-3.5 text-sm text-white outline-none input-glow transition-all appearance-none cursor-pointer">
-                                <option value="" class="bg-navy">Pilih Jenis Fasyankes</option>
-                                <option value="Dinkes" class="bg-navy">Dinas Kesehatan (Admin)</option>
-                                <option value="Puskesmas" class="bg-navy">Puskesmas</option>
-                                <option value="Klinik" class="bg-navy">Klinik / Praktik Mandiri</option>
-                                <option value="Rumah Sakit" class="bg-navy">Rumah Sakit</option>
-                            </select>
-                            <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                    <form onsubmit="handleLogin(event)" class="space-y-5">
+                        
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kategori Layanan</label>
+                            <div class="relative">
+                                <select id="loginFasyankes" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl px-4 py-3.5 text-sm text-white outline-none input-glow transition-all appearance-none cursor-pointer">
+                                    <option value="" class="bg-navy">Pilih Jenis Fasyankes</option>
+                                    <option value="Dinkes" class="bg-navy">Dinas Kesehatan (Admin)</option>
+                                    <option value="Puskesmas" class="bg-navy">Puskesmas</option>
+                                    <option value="Klinik" class="bg-navy">Klinik / Praktik Mandiri</option>
+                                    <option value="Rumah Sakit" class="bg-navy">Rumah Sakit</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-2 group">
-                        <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Email Terdaftar</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                            <input type="email" id="loginEmail" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white outline-none input-glow transition-all" placeholder="admin@fasyankes.id">
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Email Terdaftar</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
+                                <input type="email" id="loginEmail" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3.5 text-sm text-white outline-none input-glow transition-all" placeholder="admin@fasyankes.id">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="space-y-2 group">
-                        <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kata Sandi</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
-                            <input type="password" id="loginPassword" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-12 py-3.5 text-sm text-white outline-none input-glow transition-all" placeholder="••••••••">
-                            <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-skyblue transition-colors outline-none focus:outline-none">
-                                <i id="eyeIconLogin" class="fa-solid fa-eye-slash text-xs"></i>
-                            </button>
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kata Sandi</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
+                                <input type="password" id="loginPassword" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-12 py-3.5 text-sm text-white outline-none input-glow transition-all" placeholder="••••••••">
+                                <button type="button" onclick="togglePassword('loginPassword', 'eyeIconLogin')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-skyblue transition-colors outline-none focus:outline-none">
+                                    <i id="eyeIconLogin" class="fa-solid fa-eye-slash text-xs"></i>
+                                </button>
+                            </div>
                         </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-skyblue to-vibrant text-white font-extrabold py-4 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 mt-6 uppercase tracking-wider text-sm flex justify-center items-center gap-2">
+                            <span>Masuk ke Dashboard</span>
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                        <p class="text-xs text-slate-400">
+                            Belum memiliki akses fasyankes? <br class="md:hidden mt-1">
+                            <button type="button" onclick="switchView('register')" class="text-skyblue font-bold hover:text-white hover:underline transition-colors ml-1 outline-none">Registrasi Akun Baru</button>
+                        </p>
                     </div>
+                </div>
 
-                    <button type="submit" class="w-full bg-gradient-to-r from-skyblue to-vibrant text-white font-extrabold py-4 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 mt-6 uppercase tracking-wider text-sm flex justify-center items-center gap-2">
-                        <span>Masuk ke Dashboard</span>
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                    </button>
-                </form>
+                <!-- ============================ -->
+                <!-- VIEW 2: FORM REGISTRASI      -->
+                <!-- ============================ -->
+                <div id="registerView" class="form-container hidden">
+                    <div class="mb-6">
+                        <h3 class="text-3xl font-bold text-white mb-2">Daftar Fasyankes</h3>
+                        <p class="text-slate-400 text-sm">Lengkapi data untuk mendapatkan akses sistem.</p>
+                    </div>
+                    
+                    <form onsubmit="handleRegister(event)" class="space-y-4">
+                        
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kategori Layanan</label>
+                            <div class="relative">
+                                <select id="regFasyankes" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-white outline-none input-glow transition-all appearance-none cursor-pointer">
+                                    <option value="" class="bg-navy">Pilih Jenis Fasyankes</option>
+                                    <option value="Dinkes" class="bg-navy">Dinas Kesehatan (Admin)</option>
+                                    <option value="Puskesmas" class="bg-navy">Puskesmas</option>
+                                    <option value="Klinik" class="bg-navy">Klinik / Praktik Mandiri</option>
+                                    <option value="Rumah Sakit" class="bg-navy">Rumah Sakit</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs pointer-events-none"></i>
+                            </div>
+                        </div>
 
-                <div class="mt-8 pt-6 border-t border-white/10 text-center">
-                    <p class="text-xs text-slate-400">
-                        Belum memiliki akses fasyankes? <br class="md:hidden mt-1">
-                        <a href="register.html" class="text-skyblue font-bold hover:text-white hover:underline transition-colors ml-1">Registrasi Akun Baru</a>
-                    </p>
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Nama Unit Kerja</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-hospital absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
+                                <input type="text" id="regUnitKerja" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3 text-sm text-white outline-none input-glow transition-all" placeholder="Misal: Puskesmas Melati">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Email</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
+                                <input type="email" id="regEmail" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-4 py-3 text-sm text-white outline-none input-glow transition-all" placeholder="admin@fasyankes.id">
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 group">
+                            <label class="block text-[10px] font-black text-skyblue uppercase tracking-[0.2em] ml-1 opacity-80 group-focus-within:opacity-100 transition-opacity">Kata Sandi</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xs group-focus-within:text-skyblue transition-colors"></i>
+                                <input type="password" id="regPassword" required class="w-full bg-darkblue/40 border border-slate-700/80 rounded-xl pl-11 pr-12 py-3 text-sm text-white outline-none input-glow transition-all" placeholder="••••••••">
+                                <button type="button" onclick="togglePassword('regPassword', 'eyeIconReg')" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-skyblue transition-colors outline-none focus:outline-none">
+                                    <i id="eyeIconReg" class="fa-solid fa-eye-slash text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-vibrant to-skyblue text-white font-extrabold py-3.5 rounded-xl transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.5)] hover:-translate-y-0.5 active:scale-[0.98] active:translate-y-0 mt-4 uppercase tracking-wider text-sm flex justify-center items-center gap-2">
+                            <span>Daftar Akun</span>
+                            <i class="fa-solid fa-user-plus"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 pt-5 border-t border-white/10 text-center">
+                        <p class="text-xs text-slate-400">
+                            Sudah memiliki akses fasyankes? <br class="md:hidden mt-1">
+                            <button type="button" onclick="switchView('login')" class="text-skyblue font-bold hover:text-white hover:underline transition-colors ml-1 outline-none">Masuk di sini</button>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -209,12 +280,12 @@
                 <i class="fa-solid fa-shield-check text-skyblue"></i>
             </div>
         </div>
-        <p class="text-skyblue font-bold text-xs mt-6 tracking-[0.3em] uppercase animate-pulse">Memverifikasi Akses...</p>
+        <p id="loaderText" class="text-skyblue font-bold text-xs mt-6 tracking-[0.3em] uppercase animate-pulse">Memverifikasi Akses...</p>
     </div>
 
     <script>
-        // URL API dari Google Apps Script Anda
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyz0WCr1nW8aH_ExPZnFvbxvUZt65PpDAf8L7pdb4j2KE8eKkV3cOAZcePbuboMK31T/exec";
+        // URL API dari Google Apps Script Anda (TELAH DIPERBARUI)
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzUPJ2v7DNN4t2cpuWo5pTMrURZH9pdCeskOrL6G3zAfJXhwDrDAD_6yjOGXtlzul6O/exec";
 
         // Fungsi Tampilkan/Sembunyikan Password
         function togglePassword(inputId, iconId) {
@@ -231,25 +302,58 @@
             }
         }
 
-        // Fungsi Menampilkan Notifikasi Kesalahan
-        function showAlert(message) {
+        // Fungsi Mengganti Tampilan (Login <-> Register)
+        function switchView(viewName) {
+            const loginView = document.getElementById('loginView');
+            const registerView = document.getElementById('registerView');
             const alertBox = document.getElementById('alertMessage');
+            
+            // Sembunyikan notifikasi setiap pindah tab
+            alertBox.classList.add('hidden');
+
+            if (viewName === 'register') {
+                loginView.classList.add('hidden');
+                registerView.classList.remove('hidden');
+            } else {
+                registerView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            }
+        }
+
+        // Fungsi Menampilkan Notifikasi Terpusat
+        function showAlert(message, type = 'error') {
+            const alertBox = document.getElementById('alertMessage');
+            const alertIcon = document.getElementById('alertIcon');
             const alertText = document.getElementById('alertText');
+            
+            // Reset class
+            alertBox.className = "w-full text-xs p-4 rounded-xl flex items-center gap-3 transition-all mb-4";
+            
+            if (type === 'success') {
+                alertBox.classList.add('bg-emerald-500/20', 'border', 'border-emerald-500/50', 'text-emerald-200');
+                alertIcon.className = "fa-solid fa-circle-check text-emerald-400";
+            } else {
+                alertBox.classList.add('bg-red-500/20', 'border', 'border-red-500/50', 'text-red-200');
+                alertIcon.className = "fa-solid fa-circle-exclamation text-red-400";
+            }
+
             alertText.innerText = message;
             alertBox.classList.remove('hidden');
             
-            // Sembunyikan otomatis setelah 5 detik
+            // Sembunyikan otomatis
             setTimeout(() => {
                 alertBox.classList.add('hidden');
-            }, 5000);
+            }, 6000);
         }
 
-        // Fungsi Utama Menangani Login
+        // ==========================================
+        // FUNGSI UTAMA: LOGIN
+        // ==========================================
         async function handleLogin(e) {
             e.preventDefault();
             
-            // Tampilkan loading screen dan sembunyikan pesan error yang lama
             document.getElementById('loader').classList.remove('hidden');
+            document.getElementById('loaderText').innerText = "Memverifikasi Kredensial...";
             document.getElementById('alertMessage').classList.add('hidden');
             
             const payload = {
@@ -260,7 +364,6 @@
             };
 
             try {
-                // Mengirim request POST ke Google Apps Script
                 const response = await fetch(GAS_URL, { 
                     method: 'POST', 
                     body: JSON.stringify(payload) 
@@ -269,36 +372,77 @@
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // Menyimpan data sesi dengan pembersihan spasi (trim)
                     const cleanEmail = payload.email.trim();
                     
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('unitKerja', result.unitKerja);
                     sessionStorage.setItem('kategori', payload.fasyankes);
                     
-                    // Simpan email untuk otorisasi Panel Persetujuan
                     sessionStorage.setItem('userEmail', cleanEmail);
                     localStorage.setItem('userEmail', cleanEmail); 
 
-                    // --- TAMBAHAN BARU: Menerima URL Drive dari Server Pusat ---
                     if (result.driveUrl && result.driveUrl !== "") {
                         sessionStorage.setItem('gasUrl', result.driveUrl);
                     } else {
-                        // Jika server tidak mengirim URL, pastikan tidak ada sisa URL lama di sesi ini
                         sessionStorage.removeItem('gasUrl'); 
                     }
-                    // -----------------------------------------------------------
                     
-                    // Arahkan ke halaman Dashboard
                     window.location.href = 'dashboard.html';
                 } else {
-                    showAlert("Akses Ditolak: " + result.message);
+                    showAlert("Akses Ditolak: " + result.message, 'error');
                 }
             } catch (err) {
-                showAlert("Kesalahan koneksi ke Database Pusat. Silakan coba lagi.");
+                showAlert("Kesalahan koneksi ke Database Pusat. Silakan coba lagi.", 'error');
                 console.error(err);
             } finally {
-                // Sembunyikan loading screen
+                document.getElementById('loader').classList.add('hidden');
+            }
+        }
+
+        // ==========================================
+        // FUNGSI UTAMA: REGISTRASI
+        // ==========================================
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            document.getElementById('loader').classList.remove('hidden');
+            document.getElementById('loaderText').innerText = "Mendaftarkan Fasyankes...";
+            document.getElementById('alertMessage').classList.add('hidden');
+
+            const payload = {
+                action: 'register',
+                fasyankes: document.getElementById('regFasyankes').value,
+                unitKerja: document.getElementById('regUnitKerja').value,
+                email: document.getElementById('regEmail').value,
+                pass: document.getElementById('regPassword').value
+            };
+
+            try {
+                // Asumsi backend Google Apps Script menerima property ini dengan format yang sama
+                const response = await fetch(GAS_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify(payload) 
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // Sukses -> Bersihkan form, pindah tab ke login, dan isi otomatis email
+                    document.getElementById('loginEmail').value = payload.email;
+                    document.getElementById('loginFasyankes').value = payload.fasyankes;
+                    
+                    // Kosongkan form reg
+                    e.target.reset(); 
+                    
+                    switchView('login');
+                    showAlert("Registrasi Berhasil! Silakan masuk dengan kata sandi Anda.", 'success');
+                } else {
+                    showAlert("Registrasi Gagal: " + (result.message || "Data sudah ada atau invalid."), 'error');
+                }
+            } catch (err) {
+                showAlert("Gagal terhubung ke Database Pusat. Cek koneksi Anda.", 'error');
+                console.error(err);
+            } finally {
                 document.getElementById('loader').classList.add('hidden');
             }
         }
